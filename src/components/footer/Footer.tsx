@@ -45,10 +45,10 @@ const Footer = ({
       >
         <Stack.Col gap={2}>
           <Section heading="canvasActions">
-            <ZoomActions
+            {/* <ZoomActions
               renderAction={actionManager.renderAction}
               zoom={appState.zoom}
-            />
+            /> */}
 
             {!appState.viewModeEnabled && (
               <UndoRedoActions

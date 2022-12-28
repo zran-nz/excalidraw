@@ -1129,7 +1129,7 @@ class App extends React.Component<AppProps, AppState> {
       !this.state.showWelcomeScreen &&
       !this.scene.getElementsIncludingDeleted().length
     ) {
-      this.setState({ showWelcomeScreen: true });
+      // this.setState({ showWelcomeScreen: true });
     }
 
     if (

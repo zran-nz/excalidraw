@@ -51,7 +51,7 @@ import {
   WelcomeScreenMenuArrow,
   WelcomeScreenTopToolbarArrow,
 } from "./icons";
-import { MenuLinks, Separator } from "./MenuUtils";
+import { Separator } from "./MenuUtils";
 import { useOutsideClickHook } from "../hooks/useOutsideClick";
 import WelcomeScreen from "./WelcomeScreen";
 import { hostSidebarCountersAtom } from "./Sidebar/Sidebar";
@@ -251,8 +251,6 @@ const LayerUI = ({
               {actionManager.renderAction("toggleShortcuts", undefined, true)}
               {!appState.viewModeEnabled &&
                 actionManager.renderAction("clearCanvas")}
-              <Separator />
-              <MenuLinks />
               <Separator />
               <div
                 style={{

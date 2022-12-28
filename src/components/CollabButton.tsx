@@ -30,7 +30,7 @@ const CollabButton = ({
         <button
           className={clsx("collab-button", { active: isCollaborating })}
           type="button"
-          onClick={onClick}
+          // onClick={onClick}
           style={{ position: "relative" }}
           title={t("labels.liveCollaboration")}
         >

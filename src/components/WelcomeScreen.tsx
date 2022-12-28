@@ -10,7 +10,7 @@ import {
   ExcalLogo,
   HelpIcon,
   LoadIcon,
-  PlusPromoIcon,
+  // PlusPromoIcon,
   UsersIcon,
 } from "./icons";
 import "./WelcomeScreen.scss";
@@ -121,14 +121,6 @@ const WelcomeScreen = ({
           shortcut="?"
           icon={HelpIcon}
         />
-        {!isExcalidrawPlusSignedUser && (
-          <WelcomeScreenItem
-            link="https://plus.excalidraw.com/plus?utm_source=excalidraw&utm_medium=app&utm_content=welcomeScreenGuest"
-            label="Try Excalidraw Plus!"
-            shortcut={null}
-            icon={PlusPromoIcon}
-          />
-        )}
       </div>
     </div>
   );

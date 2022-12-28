@@ -30,7 +30,7 @@ import {
 import {
   generateCollaborationLinkData,
   getCollaborationLink,
-  getCollabServer,
+  // getCollabServer,
   getSyncableElements,
   SocketUpdateDataSource,
   SyncableExcalidrawElement,
@@ -40,7 +40,7 @@ import {
   loadFilesFromFirebase,
   loadFromFirebase,
   saveFilesToFirebase,
-  saveToFirebase,
+  // saveToFirebase,
 } from "../data/firebase";
 import {
   importUsernameFromLocalStorage,
@@ -229,21 +229,20 @@ class Collab extends PureComponent<Props, CollabState> {
   saveCollabRoomToFirebase = async (
     syncableElements: readonly SyncableExcalidrawElement[],
   ) => {
-    try {
-      const savedData = await saveToFirebase(
-        this.portal,
-        syncableElements,
-        this.excalidrawAPI.getAppState(),
-      );
-
-      if (this.isCollaborating() && savedData && savedData.reconciledElements) {
-        this.handleRemoteSceneUpdate(
-          this.reconcileElements(savedData.reconciledElements),
-        );
-      }
-    } catch (error: any) {
-      console.error(error);
-    }
+    // try {
+    //   const savedData = await saveToFirebase(
+    //     this.portal,
+    //     syncableElements,
+    //     this.excalidrawAPI.getAppState(),
+    //   );
+    //   if (this.isCollaborating() && savedData && savedData.reconciledElements) {
+    //     this.handleRemoteSceneUpdate(
+    //       this.reconcileElements(savedData.reconciledElements),
+    //     );
+    //   }
+    // } catch (error: any) {
+    //   console.error(error);
+    // }
   };
 
   stopCollaboration = (keepRemoteState = true) => {
@@ -351,7 +350,7 @@ class Collab extends PureComponent<Props, CollabState> {
       );
       return JSON.parse(decodedData);
     } catch (error) {
-      window.alert(t("alerts.decryptFailed"));
+      // window.alert(t("alerts.decryptFailed"));
       console.error(error);
       return {
         type: "INVALID_RESPONSE",
@@ -368,13 +367,12 @@ class Collab extends PureComponent<Props, CollabState> {
       return null;
     }
 
-    let roomId;
+    let roomId = localStorage.getItem("class_id") ?? "";
     let roomKey;
-
     if (existingRoomLinkData) {
       ({ roomId, roomKey } = existingRoomLinkData);
     } else {
-      ({ roomId, roomKey } = await generateCollaborationLinkData());
+      ({ roomKey } = await generateCollaborationLinkData());
       window.history.pushState(
         {},
         APP_NAME,
@@ -402,13 +400,12 @@ class Collab extends PureComponent<Props, CollabState> {
     this.fallbackInitializationHandler = fallbackInitializationHandler;
 
     try {
-      const socketServerData = await getCollabServer();
+      // const socketServerData = await getCollabServer();
 
       this.portal.socket = this.portal.open(
-        socketIOClient(socketServerData.url, {
-          transports: socketServerData.polling
-            ? ["websocket", "polling"]
-            : ["websocket"],
+        socketIOClient(location.origin, {
+          path: "/drawws/socket.io/",
+          transports: ["websocket"],
         }),
         roomId,
         roomKey,
@@ -561,21 +558,21 @@ class Collab extends PureComponent<Props, CollabState> {
       this.excalidrawAPI.resetScene();
 
       try {
-        const elements = await loadFromFirebase(
-          roomLinkData.roomId,
-          roomLinkData.roomKey,
-          this.portal.socket,
-        );
-        if (elements) {
-          this.setLastBroadcastedOrReceivedSceneVersion(
-            getSceneVersion(elements),
-          );
+        // const elements = await loadFromFirebase(
+        //   roomLinkData.roomId,
+        //   roomLinkData.roomKey,
+        //   this.portal.socket,
+        // );
+        // if (elements) {
+        //   this.setLastBroadcastedOrReceivedSceneVersion(
+        //     getSceneVersion(elements),
+        //   );
 
-          return {
-            elements,
-            scrollToContent: true,
-          };
-        }
+        //   return {
+        //     elements,
+        //     scrollToContent: true,
+        //   };
+        // }
       } catch (error: any) {
         // log the error and move on. other peers will sync us the scene.
         console.error(error);
@@ -807,7 +804,7 @@ class Collab extends PureComponent<Props, CollabState> {
 
     return (
       <>
-        {modalIsShown && (
+        {modalIsShown && false && (
           <RoomDialog
             handleClose={this.handleClose}
             activeRoomLink={activeRoomLink}

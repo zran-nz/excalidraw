@@ -14,6 +14,7 @@ export const LibraryButton: React.FC<{
 }> = ({ appState, setAppState, isMobile }) => {
   const device = useDevice();
   const showLabel = !isMobile;
+  return null;
 
   // TODO barnabasmolnar/redesign
   // not great, toolbar jumps in a jarring manner

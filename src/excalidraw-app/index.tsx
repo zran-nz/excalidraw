@@ -82,6 +82,7 @@ import { ExcalidrawPlusAppLink } from "./components/ExcalidrawPlusAppLink";
 
 polyfill();
 window.EXCALIDRAW_THROTTLE_RENDER = true;
+window.LastAppState = {};
 
 const languageDetector = new LanguageDetector();
 languageDetector.init({
@@ -103,7 +104,6 @@ const initializeScene = async (opts: {
     /^#json=([a-zA-Z0-9_-]+),([a-zA-Z0-9_-]+)$/,
   );
   const externalUrlMatch = window.location.hash.match(/^#url=(.*)$/);
-
   const localDataState = importFromLocalStorage();
 
   let scene: RestoredDataState & {
@@ -257,7 +257,6 @@ const ExcalidrawWrapper = () => {
   const [isCollaborating] = useAtomWithInitialValue(isCollaboratingAtom, () => {
     return isCollaborationLink(window.location.href);
   });
-
   useHandleLibrary({
     excalidrawAPI,
     getInitialLibraryItems: getLibraryItemsFromStorage,
@@ -267,7 +266,28 @@ const ExcalidrawWrapper = () => {
     if (!collabAPI || !excalidrawAPI) {
       return;
     }
-
+    console.warn("draw init ok");
+    setTimeout(() => {
+      if (top) {
+        top.postMessage({ app: "draw", ok: 1 }, "*");
+      }
+    }, 1000);
+    window.addEventListener("message", ({ data }) => {
+      console.warn("draw message:", data);
+      const { nickname, get, appState, elements } = data;
+      if (nickname) {
+        collabAPI.setUsername(nickname);
+      }
+      if (get === "info") {
+        console.warn(excalidrawAPI.getAppState(), appState);
+      }
+      if (elements || appState) {
+        if (appState) {
+          window.LastAppState = appState;
+        }
+        excalidrawAPI.updateScene({ elements, appState });
+      }
+    });
     const loadImages = (
       data: ResolutionType<typeof initializeScene>,
       isInitialLoad = false,
@@ -497,7 +517,18 @@ const ExcalidrawWrapper = () => {
     // but may change in the future
     document.documentElement.classList.toggle("dark", theme === THEME.DARK);
   }, [theme]);
-
+  // disable move
+  const onScrollChange = (x: any, y: any) => {
+    excalidrawAPI?.updateScene({
+      appState: {
+        ...window.LastAppState,
+        offsetLeft: 0,
+        offsetTop: 0,
+        scrollX: 0,
+        scrollY: 0,
+      },
+    });
+  };
   const onChange = (
     elements: readonly ExcalidrawElement[],
     appState: AppState,
@@ -604,13 +635,15 @@ const ExcalidrawWrapper = () => {
       <Excalidraw
         ref={excalidrawRefCallback}
         onChange={onChange}
+        onScrollChange={onScrollChange}
         initialData={initialStatePromiseRef.current.promise}
         onCollabButtonClick={() => setCollabDialogShown(true)}
         isCollaborating={isCollaborating}
         onPointerUpdate={collabAPI?.onPointerUpdate}
         UIOptions={{
           canvasActions: {
-            toggleTheme: true,
+            toggleTheme: false,
+            changeViewBackgroundColor: false,
             export: {
               onExportToBackend,
               renderCustomUI: (elements, appState, files) => {
