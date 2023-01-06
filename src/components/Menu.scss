@@ -7,6 +7,10 @@
     overflow-y: auto;
   }
 
+  .menu-container > :nth-child(4),
+  .menu-container > :nth-child(6) {
+    display: none;
+  }
   .menu-button {
     @include outlineButtonStyles;
     background-color: var(--island-bg-color);

@@ -265,7 +265,7 @@ const LayerUI = ({
                 </div>
                 {!appState.viewModeEnabled && (
                   <div>
-                    <div style={{ fontSize: ".75rem", marginBottom: ".5rem" }}>
+                    <div style={{ display: "none", fontSize: ".75rem", marginBottom: ".5rem" }}>
                       {t("labels.canvasBackground")}
                     </div>
                     <div style={{ padding: "0 0.625rem" }}>

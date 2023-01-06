@@ -1,4 +1,5 @@
 import polyfill from "../polyfill";
+import html2canvas from "html2canvas";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "../analytics";
@@ -538,6 +539,10 @@ const ExcalidrawWrapper = () => {
       collabAPI.syncElements(elements);
     }
 
+    if (event?.type === "input") {
+      return;
+    }
+
     setTheme(appState.theme);
 
     // this check is redundant, but since this is a hot path, it's best
@@ -561,6 +566,31 @@ const ExcalidrawWrapper = () => {
               }
               return element;
             });
+
+          html2canvas(document.body, {
+            backgroundColor: null,
+            ignoreElements(el) {
+              return (
+                el.tagName.toLowerCase() === "noscript" ||
+                el.className === "layer-ui__wrapper"
+              );
+            },
+          }).then((canvas: any) => {
+            if (top) {
+              top.postMessage(
+                {
+                  app: "draw",
+                  src: canvas.toDataURL("image/webp", 0.8),
+                  body: {
+                    appState,
+                    elements,
+                    files,
+                  },
+                },
+                "*",
+              );
+            }
+          });
 
           if (didChange) {
             excalidrawAPI.updateScene({
