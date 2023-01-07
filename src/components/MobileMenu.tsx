@@ -234,6 +234,7 @@ export const MobileMenu = ({
         />
       )}
       <div
+        data-html2canvas-ignore="true"
         className="App-bottom-bar"
         style={{
           marginBottom: SCROLLBAR_WIDTH + SCROLLBAR_MARGIN * 1,

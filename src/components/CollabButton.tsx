@@ -16,6 +16,9 @@ const CollabButton = ({
   onClick: () => void;
   isInHamburgerMenu?: boolean;
 }) => {
+  if (!isCollaborating) {
+    return <></>;
+  }
   return (
     <>
       {isInHamburgerMenu ? (

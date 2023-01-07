@@ -538,8 +538,10 @@ const ExcalidrawWrapper = () => {
     if (collabAPI?.isCollaborating()) {
       collabAPI.syncElements(elements);
     }
+    
+    console.log(event?.type, "<=========event.type===");
 
-    if (event?.type === "input") {
+    if (event?.type === "input" || event?.type === "keyup") {
       return;
     }
 
@@ -569,12 +571,6 @@ const ExcalidrawWrapper = () => {
 
           html2canvas(document.body, {
             backgroundColor: null,
-            ignoreElements(el) {
-              return (
-                el.tagName.toLowerCase() === "noscript" ||
-                el.className === "layer-ui__wrapper"
-              );
-            },
           }).then((canvas: any) => {
             if (top) {
               top.postMessage(
