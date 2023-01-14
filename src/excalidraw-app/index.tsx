@@ -1,5 +1,5 @@
 import polyfill from "../polyfill";
-import html2canvas from "html2canvas";
+//import html2canvas from "html2canvas";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "../analytics";
@@ -22,7 +22,7 @@ import {
 } from "../element/types";
 import { useCallbackRefState } from "../hooks/useCallbackRefState";
 import { t } from "../i18n";
-import { Excalidraw, defaultLang, Footer } from "../packages/excalidraw/index";
+import { Excalidraw, exportToCanvas, defaultLang, Footer } from "../packages/excalidraw/index";
 import {
   AppState,
   LibraryItems,
@@ -275,13 +275,15 @@ const ExcalidrawWrapper = () => {
     }, 1000);
     window.addEventListener("message", ({ data }) => {
       console.warn("draw message:", data);
-      const { nickname, get, appState, elements } = data;
+      const { nickname, get, pageId, appState, elements } = data;
       if (nickname) {
         collabAPI.setUsername(nickname);
       }
       if (get === "info") {
         console.warn(excalidrawAPI.getAppState(), appState);
+        window.PAGE_ID = pageId;
       }
+
       if (elements || appState) {
         if (appState) {
           window.LastAppState = appState;
@@ -538,11 +540,11 @@ const ExcalidrawWrapper = () => {
     if (collabAPI?.isCollaborating()) {
       collabAPI.syncElements(elements);
     }
-    
-    console.log(event?.type, "<=========event.type===");
+    // eslint-disable-next-line no-console
+    //console.log(event?.type, "<=========event.type===");
 
     if (event?.type === "input" || event?.type === "keyup") {
-      return;
+      //return;
     }
 
     setTheme(appState.theme);
@@ -550,7 +552,7 @@ const ExcalidrawWrapper = () => {
     // this check is redundant, but since this is a hot path, it's best
     // not to evaludate the nested expression every time
     if (!LocalData.isSavePaused()) {
-      LocalData.save(elements, appState, files, () => {
+      LocalData.save(elements, appState, files, async () => {
         if (excalidrawAPI) {
           let didChange = false;
 
@@ -569,6 +571,44 @@ const ExcalidrawWrapper = () => {
               return element;
             });
 
+          const canvas = await exportToCanvas({
+            elements: excalidrawAPI?.getSceneElements(),
+            appState: {
+              ...appState,
+              viewBackgroundColor: "transparent",
+            },
+            getDimensions(): {
+              width: number;
+              height: number;
+              scale: number;
+            } {
+              return {
+                width: window.innerWidth,
+                height: window.innerHeight,
+                scale: appState.zoom.value,
+              };
+            },
+            files: excalidrawAPI?.getFiles(),
+          });
+          // eslint-disable-next-line no-console
+          console.log("<=======================post message");
+          if (top) {
+            top.postMessage(
+              {
+                app: "draw",
+                src: canvas.toDataURL("image/webp", 0.8),
+                id: window.PAGE_ID,
+                body: {
+                  appState,
+                  elements,
+                  files,
+                },
+              },
+              "*",
+            );
+          }
+
+          /*
           html2canvas(document.body, {
             backgroundColor: null,
           }).then((canvas: any) => {
@@ -577,6 +617,7 @@ const ExcalidrawWrapper = () => {
                 {
                   app: "draw",
                   src: canvas.toDataURL("image/webp", 0.8),
+                  id: window.PAGE_ID,
                   body: {
                     appState,
                     elements,
@@ -587,6 +628,7 @@ const ExcalidrawWrapper = () => {
               );
             }
           });
+          */
 
           if (didChange) {
             excalidrawAPI.updateScene({

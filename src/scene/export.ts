@@ -59,8 +59,10 @@ export const exportToCanvas = async (
     canvas,
     renderConfig: {
       viewBackgroundColor: exportBackground ? viewBackgroundColor : null,
-      scrollX: -minX + exportPadding,
-      scrollY: -minY + exportPadding,
+      scrollX: exportPadding,
+      scrollY: exportPadding,
+      //scrollX: -minX + exportPadding,
+      //scrollY: -minY + exportPadding,
       zoom: defaultAppState.zoom,
       remotePointerViewportCoords: {},
       remoteSelectedElementIds: {},

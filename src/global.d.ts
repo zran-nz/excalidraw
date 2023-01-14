@@ -18,6 +18,7 @@ interface Window {
   EXCALIDRAW_EXPORT_SOURCE: string;
   EXCALIDRAW_THROTTLE_RENDER: boolean | undefined;
   LastAppState: any;
+  PAGE_ID: any;
   gtag: Function;
 }
 
