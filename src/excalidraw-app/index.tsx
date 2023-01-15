@@ -1,5 +1,4 @@
 import polyfill from "../polyfill";
-//import html2canvas from "html2canvas";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { useEffect, useRef, useState } from "react";
 import { trackEvent } from "../analytics";
@@ -22,7 +21,12 @@ import {
 } from "../element/types";
 import { useCallbackRefState } from "../hooks/useCallbackRefState";
 import { t } from "../i18n";
-import { Excalidraw, exportToCanvas, defaultLang, Footer } from "../packages/excalidraw/index";
+import {
+  Excalidraw,
+  exportToCanvas,
+  defaultLang,
+  Footer,
+} from "../packages/excalidraw/index";
 import {
   AppState,
   LibraryItems,
@@ -275,13 +279,12 @@ const ExcalidrawWrapper = () => {
     }, 1000);
     window.addEventListener("message", ({ data }) => {
       console.warn("draw message:", data);
-      const { nickname, get, pageId, appState, elements } = data;
+      const { nickname, get, appState, elements } = data;
       if (nickname) {
         collabAPI.setUsername(nickname);
       }
       if (get === "info") {
         console.warn(excalidrawAPI.getAppState(), appState);
-        window.PAGE_ID = pageId;
       }
 
       if (elements || appState) {
@@ -591,13 +594,12 @@ const ExcalidrawWrapper = () => {
             files: excalidrawAPI?.getFiles(),
           });
           // eslint-disable-next-line no-console
-          console.log("<=======================post message");
+          console.log("<====new drawing data sending====>");
           if (top) {
             top.postMessage(
               {
                 app: "draw",
                 src: canvas.toDataURL("image/webp", 0.8),
-                id: window.PAGE_ID,
                 body: {
                   appState,
                   elements,
@@ -607,28 +609,6 @@ const ExcalidrawWrapper = () => {
               "*",
             );
           }
-
-          /*
-          html2canvas(document.body, {
-            backgroundColor: null,
-          }).then((canvas: any) => {
-            if (top) {
-              top.postMessage(
-                {
-                  app: "draw",
-                  src: canvas.toDataURL("image/webp", 0.8),
-                  id: window.PAGE_ID,
-                  body: {
-                    appState,
-                    elements,
-                    files,
-                  },
-                },
-                "*",
-              );
-            }
-          });
-          */
 
           if (didChange) {
             excalidrawAPI.updateScene({
