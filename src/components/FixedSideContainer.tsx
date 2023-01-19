@@ -15,7 +15,6 @@ export const FixedSideContainer = ({
   className,
 }: FixedSideContainerProps) => (
   <div
-    data-html2canvas-ignore="true"
     className={clsx(
       "FixedSideContainer",
       `FixedSideContainer_side_${side}`,

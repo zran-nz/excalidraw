@@ -502,6 +502,7 @@ class App extends React.Component<AppProps, AppState> {
           onTouchMove={this.handleTouchMove}
           onPointerDown={this.handleCanvasPointerDown}
         >
+          {t("labels.drawingCanvas")}
         </canvas>
       );
     }
@@ -523,6 +524,7 @@ class App extends React.Component<AppProps, AppState> {
         onPointerCancel={this.removePointer}
         onTouchMove={this.handleTouchMove}
       >
+        {t("labels.drawingCanvas")}
       </canvas>
     );
   }

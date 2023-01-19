@@ -92,7 +92,8 @@ const getHints = ({
       return t("hints.deepBoxSelect");
     }
     if (!selectedElements.length && !isMobile) {
-      return t("hints.canvasPanning");
+      //return t("hints.canvasPanning");
+      return "";
     }
   }
 

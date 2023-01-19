@@ -501,7 +501,6 @@ const LayerUI = ({
       {!device.isMobile && (
         <>
           <div
-            data-html2canvas-ignore="true"
             className={clsx("layer-ui__wrapper", {
               "disable-pointerEvents":
                 appState.draggingElement ||

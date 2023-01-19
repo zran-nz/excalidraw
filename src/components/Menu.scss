@@ -7,6 +7,9 @@
     overflow-y: auto;
   }
 
+  .menu-container > :nth-child(1),
+  .menu-container > :nth-child(2),
+  .menu-container > :nth-child(3),
   .menu-container > :nth-child(4){
     display: none;
   }
@@ -66,6 +69,7 @@
     }
 
     &.active-collab {
+      display: none;
       background-color: #ecfdf5;
       color: #064e3c;
     }
