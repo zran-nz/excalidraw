@@ -94,7 +94,7 @@ export const getFontString = ({
   fontSize: number;
   fontFamily: FontFamilyValues;
 }) => {
-  return `${fontSize}px ${getFontFamilyString({ fontFamily })}` as FontString;
+  return `${fontSize * 2}px ${getFontFamilyString({ fontFamily })}` as FontString;
 };
 
 export const debounce = <T extends any[]>(
