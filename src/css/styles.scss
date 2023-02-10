@@ -241,6 +241,10 @@
     padding: 8px;
   }
 
+  .App-toolbar-content > :first-child{
+    display: none;
+  }
+
   .App-mobile-menu {
     width: 100%;
     overflow-x: visible;
