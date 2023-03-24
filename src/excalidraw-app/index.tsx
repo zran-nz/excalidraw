@@ -32,6 +32,7 @@ import {
   LibraryItems,
   ExcalidrawImperativeAPI,
   BinaryFiles,
+  NormalizedZoomValue,
   ExcalidrawInitialDataState,
 } from "../types";
 import {
@@ -574,10 +575,16 @@ const ExcalidrawWrapper = () => {
               return element;
             });
 
+          const scale = 1 / appState.zoom.value;
           const canvas = await exportToCanvas({
             elements: excalidrawAPI?.getSceneElements(),
             appState: {
               ...appState,
+              zoom: {
+                value: (appState.zoom.value * scale) as NormalizedZoomValue,
+              },
+              width: appState.width * scale,
+              height: appState.height * scale,
               viewBackgroundColor: "transparent",
             },
             getDimensions(): {
@@ -586,9 +593,9 @@ const ExcalidrawWrapper = () => {
               scale: number;
             } {
               return {
-                width: window.innerWidth,
-                height: window.innerHeight,
-                scale: appState.zoom.value,
+                width: window.innerWidth * scale,
+                height: window.innerHeight * scale,
+                scale: appState.zoom.value * scale,
               };
             },
             files: excalidrawAPI?.getFiles(),
