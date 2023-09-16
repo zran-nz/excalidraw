@@ -383,7 +383,7 @@ class Collab extends PureComponent<Props, CollabState> {
     const scenePromise = resolvablePromise<ImportedDataState | null>();
 
     this.setIsCollaborating(true);
-    LocalData.pauseSave("collaboration");
+    //LocalData.pauseSave("collaboration");
 
     const { default: socketIOClient } = await import(
       /* webpackChunkName: "socketIoClient" */ "socket.io-client"
