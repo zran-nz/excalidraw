@@ -272,12 +272,6 @@ const ExcalidrawWrapper = () => {
     if (!collabAPI || !excalidrawAPI) {
       return;
     }
-    console.warn("draw init ok");
-    setTimeout(() => {
-      if (top) {
-        top.postMessage({ app: "draw", ok: 1 }, "*");
-      }
-    }, 1000);
     window.addEventListener("message", ({ data }) => {
       console.warn("draw message:", data);
       const { nickname, get, appState, elements } = data;
@@ -365,6 +359,13 @@ const ExcalidrawWrapper = () => {
     initializeScene({ collabAPI, excalidrawAPI }).then(async (data) => {
       loadImages(data, /* isInitialLoad */ true);
       initialStatePromiseRef.current.promise.resolve(data.scene);
+    }).then(() => {
+      console.warn("draw init ok");
+      setTimeout(() => {
+        if (top) {
+          top.postMessage({ app: "draw", ok: 1 }, "*");
+        }
+      }, 10);
     });
 
     const onHashChange = async (event: HashChangeEvent) => {

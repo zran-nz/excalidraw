@@ -236,7 +236,7 @@ export const MobileMenu = ({
       <div
         className="App-bottom-bar"
         style={{
-          marginBottom: SCROLLBAR_WIDTH + SCROLLBAR_MARGIN * 1,
+          // marginBottom: SCROLLBAR_WIDTH + SCROLLBAR_MARGIN * 1,
           marginLeft: SCROLLBAR_WIDTH + SCROLLBAR_MARGIN * 1,
           marginRight: SCROLLBAR_WIDTH + SCROLLBAR_MARGIN * 1,
         }}
