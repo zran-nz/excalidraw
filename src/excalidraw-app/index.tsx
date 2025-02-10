@@ -281,7 +281,7 @@ const ExcalidrawWrapper = () => {
       if (get === "info") {
         console.warn(excalidrawAPI.getAppState(), appState);
       } else if (get === "clear") {
-        excalidrawAPI.resetScene()
+        console.warn('clear', excalidrawAPI.resetScene())
       }
 
       if (elements || appState) {
