@@ -1,4 +1,5 @@
 #!/bin/sh
-sudo docker run --rm --name draw -p 3033:3000 -it -v $PWD:/git node:20-alpine sh -c "cd git && $*"
+sudo docker run --rm --name draw -it -v $PWD:/git node:20-alpine sh -c "cd git && $*"
 # sudo docker exec -it api sh -c "cd git && $*"
+# -p 3033:3000
 # --user $(id -u):$(id -g)

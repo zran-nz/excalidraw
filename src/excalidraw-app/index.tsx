@@ -364,8 +364,8 @@ const ExcalidrawWrapper = () => {
     }).then(() => {
       console.warn("draw init ok");
       setTimeout(() => {
-        if (top) {
-          top.postMessage({ app: "draw", ok: 1 }, "*");
+        if (window.parent) {
+          window.parent.postMessage({ app: "draw", ok: 1 }, "*");
         }
       }, 10);
     });
@@ -605,8 +605,8 @@ const ExcalidrawWrapper = () => {
           });
           // eslint-disable-next-line no-console
           console.log("<====new drawing data sending====>");
-          if (top) {
-            top.postMessage(
+          if (window.parent) {
+            window.parent.postMessage(
               {
                 app: "draw",
                 src: canvas.toDataURL("image/webp", 0.8),
