@@ -272,25 +272,6 @@ const ExcalidrawWrapper = () => {
     if (!collabAPI || !excalidrawAPI) {
       return;
     }
-    window.addEventListener("message", ({ data }) => {
-      console.warn("draw message:", data);
-      const { nickname, get, appState, elements } = data;
-      if (nickname) {
-        collabAPI.setUsername(nickname);
-      }
-      if (get === "info") {
-        console.warn(excalidrawAPI.getAppState(), appState);
-      } else if (get === "clear") {
-        console.warn('clear', excalidrawAPI.resetScene())
-      }
-
-      if (elements || appState) {
-        if (appState) {
-          window.LastAppState = appState;
-        }
-        excalidrawAPI.updateScene({ elements, appState });
-      }
-    });
     const loadImages = (
       data: ResolutionType<typeof initializeScene>,
       isInitialLoad = false,
@@ -358,17 +339,19 @@ const ExcalidrawWrapper = () => {
       }
     };
 
-    initializeScene({ collabAPI, excalidrawAPI }).then(async (data) => {
-      loadImages(data, /* isInitialLoad */ true);
-      initialStatePromiseRef.current.promise.resolve(data.scene);
-    }).then(() => {
-      console.warn("draw init ok");
-      setTimeout(() => {
-        if (window.parent) {
-          window.parent.postMessage({ app: "draw", ok: 1 }, "*");
-        }
-      }, 10);
-    });
+    initializeScene({ collabAPI, excalidrawAPI })
+      .then(async (data) => {
+        loadImages(data, /* isInitialLoad */ true);
+        initialStatePromiseRef.current.promise.resolve(data.scene);
+      })
+      .then(() => {
+        console.warn("draw init ok");
+        setTimeout(() => {
+          if (window.parent) {
+            window.parent.postMessage({ app: "draw", ok: 1 }, "*");
+          }
+        }, 10);
+      });
 
     const onHashChange = async (event: HashChangeEvent) => {
       event.preventDefault();
@@ -471,6 +454,28 @@ const ExcalidrawWrapper = () => {
       }
     };
 
+    window.addEventListener("message", ({ data }) => {
+      const { nickname, get, appState, elements } = data;
+      if (!get && !appState && !elements) {
+        // 无效事件
+        return;
+      }
+      if (nickname) {
+        collabAPI.setUsername(nickname);
+      }
+      if (get === "info") {
+        console.warn(excalidrawAPI.getAppState(), appState);
+      } else if (get === "clear") {
+        console.warn("clear", excalidrawAPI.resetScene());
+      }
+
+      if (elements || appState) {
+        if (appState) {
+          window.LastAppState = appState;
+        }
+        excalidrawAPI.updateScene({ elements, appState });
+      }
+    });
     window.addEventListener(EVENT.HASHCHANGE, onHashChange, false);
     window.addEventListener(EVENT.UNLOAD, onUnload, false);
     window.addEventListener(EVENT.BLUR, visibilityChange, false);
@@ -604,7 +609,6 @@ const ExcalidrawWrapper = () => {
             files: excalidrawAPI?.getFiles(),
           });
           // eslint-disable-next-line no-console
-          console.log("<====new drawing data sending====>");
           if (window.parent) {
             window.parent.postMessage(
               {
